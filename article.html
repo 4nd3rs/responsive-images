@@ -1,0 +1,79 @@
+
+<h1>Responsive images - how to prevent reflow</h1>
+<p>
+This is what we have been thought: "To prevent reflows, specify the width and height of all images, either in the HTML &lt;img&gt; tag, or in CSS." <a href="https://developers.google.com/speed/docs/best-practices/rendering">(Source)</a>. 
+</p>
+<p>And now in responsive web design we are thougt to not specify width and height of images, but to make them flexible width: img{max-width:100%;}. So what we do is that we compromise on speed in order to get increased flexibility and availability.
+</p>
+<p>Unless you have a strategy to handle it, responsive images will cause reflow of the page. I am sure you have experienced it on mobile sites on a bad connection: you load an article, start to read the page and scroll down and then the browser focus jumps up and down because of the reflow. Before the image is loaded the browser has not reserved any space for the image, but when it is loaded, it will have to insert it into the page, and move away everything that is below and right of it. 
+</p>
+
+<p>I have put up a test page that simulates a slow connection so that we can experience the pain together. <a href="">Experience reflow</a></p>
+
+<p>Still there? Great, hope there were no casualties.</p>
+<h2>A solution</h2>
+<p>There is one prerequisite to this solution: you need to know the aspect ratio of the image. Let me explain the technique.</p>
+
+<h2>No more img{max-width:100%}</h2>
+<p>Yes, you heard it right. We are not using one of the most fundamental things in responsive web design. Instead we use the <a href="http://andmag.se/2011/11/responsive-embeds/">responsive embeds</a> technique. This means that we set a wrapper div around the image and use the "padding-bottom" trick to make a div that keeps a certain aspect ratio. In this example we add a few aspect ratios that we can use in our code. :
+
+[code]
+.embed-container {
+    position: relative;    
+    height: 0;
+    overflow: hidden;
+    background-color:black;   
+}
+
+.ratio-16-9{
+    padding-bottom:56.25%; /* 9/16*100 */
+}
+
+.ratio-4-3{
+    padding-bottom:75%; /* 3/4*100 */
+}
+
+.ratio-1-1{
+	padding-bottom:100%; /* ... */	
+}
+[/code]
+</p>
+
+<p>You can also use preprocessors like lesscss to calculate the padding for you:
+
+[code]
+@ratio-16-9: (9%/16%*100%);
+@ratio-4-3: (3%/4%*100%);
+@ratio-1-1: (100%);
+
+.ratio-16-9{padding-bottom: @ratio-16-9;}
+.ratio-4-3{padding-bottom: @ratio-4-3;}
+.ratio-1-1{padding-bottom: @ratio-1-1;}
+[/code]
+</p>
+
+
+<p>Then, it's just a matter of setting the image to position_absolute and top left aligned:
+
+[code]
+.embed-container img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width:100%;
+}
+[/code]
+</p>
+
+<h2>How about max-width?</h2>
+<p>Since height of the div is calculated based on width on the parent div, we need to set max-width on the parent div if we want to limit the size of the image.
+</p>
+
+<p>And if we use the same technique as before to simulate a slow connection you can see that we now have a reserved space for the image (I use black background for clarity): <a href="">The demo with the embed technique applied</a>
+</p>
+
+<p>So we have a technique where we reserve space for responsive content without specifying widht or height in pixels and we are not using JavaScript to calculate. The downsize is that you need to know the aspect ratio of your images.</p>
+
+
+
+
