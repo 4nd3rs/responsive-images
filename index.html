@@ -29,18 +29,18 @@
             <h2>Image quality dependant on screen size and no reflow of the page</h2>
             <ul>
                 <li>Your screen size (multiplied with device pixel ratio) on page load is: <span id="screen-size"></span>.</li>
-                <li>See the original post for details.</li>
+                <li>See the <a href="http://andmag.se/2012/10/responsive-images-lazy-load-and-multiserve-images/">original post</a> for details.</li>
             </ul>
             <p></p>
             <h2>16-9 ratio</h2>
-            <div class="lazy-load embed-container ratio-16-9">
-                    <noscript data-src-240="img/climb3_240.jpg?v=1" 
-                    data-src-320="img/climb3_320.jpg?v=1" 
-                    data-src-480="img/climb3_480.jpg?v=1"
-                    data-src-640="img/climb3_640.jpg?v=1"> 
-                        <img src="img/climb3_480.jpg?v=1"/>
-                    </noscript>
-            </div>
+<div class="lazy-load embed-container ratio-16-9">
+    <noscript data-src-240="img/climb3_240.jpg?v=1" 
+        data-src-320="img/climb3_320.jpg?v=1" 
+        data-src-480="img/climb3_480.jpg?v=1"
+        data-src-640="img/climb3_640.jpg?v=1"> 
+            <img src="img/climb3_480.jpg?v=1"/>
+    </noscript>
+</div>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                 tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
                 quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
@@ -328,48 +328,52 @@
     </div>
 
         <script>
-
-
-            AMA = {};
         
-            AMA.devicePixelRatio = window.devicePixelRatio || 1;
+//my code, so I get to choose the namespace name :-)
+ANDMAG = {};
 
-            AMA.screenWidth = window.innerWidth * AMA.devicePixelRatio;
+//get pixel ratio, default to 1
+ANDMAG.devicePixelRatio = window.devicePixelRatio || 1;
 
-            document.getElementById("screen-size").innerHTML = AMA.screenWidth;
-
-
-            AMA.lazyLoadImages = function(){
-                var lazyloadUs = document.getElementsByClassName("lazy-load");                
-                for(var i = 0; i < lazyloadUs.length; i++){       
-                    AMA.lazyloadImage(lazyloadUs[i]);
-                }
-            }
-
-            AMA.lazyloadImage = function(lazyLoadMe){
-                
-                var noscriptTag = lazyLoadMe.children[0];
+//screenwidth * pixelratio
+ANDMAG.screenWidth = window.innerWidth * ANDMAG.devicePixelRatio;
 
 
-                var imgSRC240 = noscriptTag.getAttribute("data-src-240");
-                var imgSRC320 = noscriptTag.getAttribute("data-src-320");
-                var imgSRC480 = noscriptTag.getAttribute("data-src-480");
-                var imgSRC640 = noscriptTag.getAttribute("data-src-640");
+document.getElementById("screen-size").innerHTML = ANDMAG.screenWidth;
 
-                var img = document.createElement("img");
-                if(AMA.screenWidth < 320){
-                    img.setAttribute("src", imgSRC240 );
-                }else if(AMA.screenWidth < 480){
-                    img.setAttribute("src", imgSRC320 );
-                }else if(AMA.screenWidth < 640){
-                    img.setAttribute("src", imgSRC480 );
-                }else{
-                    img.setAttribute("src", imgSRC640 );
-                }
-                  lazyLoadMe.appendChild(img);
-            }
+//get images blocks and loop through them
+ANDMAG.lazyLoadImages = function(){
+    var lazyloadUs = document.getElementsByClassName("lazy-load");                
+    for(var i = 0; i < lazyloadUs.length; i++){       
+        ANDMAG.lazyloadImage(lazyloadUs[i]);
+    }
+}
 
-            AMA.lazyLoadImages();
+//insert 'correct' image based
+ANDMAG.lazyloadImage = function(lazyLoadMe){
+    
+    var noscriptTag = lazyLoadMe.children[0];
+
+    var imgSRC240 = noscriptTag.getAttribute("data-src-240");
+    var imgSRC320 = noscriptTag.getAttribute("data-src-320");
+    var imgSRC480 = noscriptTag.getAttribute("data-src-480");
+    var imgSRC640 = noscriptTag.getAttribute("data-src-640");
+
+    var img = document.createElement("img");
+    if(ANDMAG.screenWidth < 320){
+        img.setAttribute("src", imgSRC240 );
+    }else if(ANDMAG.screenWidth < 480){
+        img.setAttribute("src", imgSRC320 );
+    }else if(ANDMAG.screenWidth < 640){
+        img.setAttribute("src", imgSRC480 );
+    }else{
+        img.setAttribute("src", imgSRC640 );
+    }
+      lazyLoadMe.appendChild(img);
+}
+
+// do it
+ANDMAG.lazyLoadImages();
 
 
 
